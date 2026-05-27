@@ -7,7 +7,6 @@
 from decimal import Decimal, getcontext
 from itertools import product
 
-from test_framework.authproxy import JSONRPCException
 from test_framework.descriptors import descsum_create
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import (
@@ -18,6 +17,7 @@ from test_framework.util import (
     assert_greater_than_or_equal,
     assert_raises_rpc_error,
     count_bytes,
+    JSONRPCException,
 )
 from test_framework.wallet_util import (
     calculate_input_weight,
@@ -31,10 +31,7 @@ class WalletSendTest(BitcoinTestFramework):
         # whitelist peers to speed up tx relay / mempool sync
         self.noban_tx_relay = True
         self.supports_cli = False
-        self.extra_args = [
-            ["-walletrbf=1", "-datacarriersize=16"],
-            ["-walletrbf=1", "-datacarriersize=16"]
-        ]
+        self.extra_args = [["-walletrbf=1", "-datacarriersize=16", "-deprecatedrpc=bip125"]] * self.num_nodes
         getcontext().prec = 8 # Satoshi precision for Decimal
 
     def skip_test_if_missing_module(self):
